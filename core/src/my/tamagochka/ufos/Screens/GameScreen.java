@@ -40,16 +40,17 @@ public class GameScreen implements Screen {
         atlas = new TextureAtlas("star0.atlas");
 
         // *** entities
-        // aim
+        // ** aim
         Entity aim = new Entity();
         aim.add(new TextureComponent("aim.png"));
         aim.add(new LocationComponent(new Vector2(hudCamera.viewportWidth / 2, hudCamera.viewportHeight / 2)));
         aim.add(new SizeComponent(aim.getComponent(TextureComponent.class).getSize()));
         aim.add(new AimComponent());
+        aim.add(new HUDCameraComponent());
         engine.addEntity(aim);
 
 
-        // stars
+        // ** stars
         int COUNT_STARS = 128;
         int[][] rectangles = new int[COUNT_STARS][4];
         rectangles[0][0] = 0;
@@ -58,12 +59,10 @@ public class GameScreen implements Screen {
         rectangles[0][3] = Game.HEIGHT;
         rectangles = splitRectangle(rectangles, 1, true, COUNT_STARS);
 
-
         Entity star;
         for(int i = 0; i < COUNT_STARS; i++) {
             star = new Entity();
-            // TODO animation and more types stars
-
+            // TODO add more types of stars
             AnimationComponent animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
             animationComponent.animatedSprite.stop();
             star.add(animationComponent);
@@ -77,13 +76,14 @@ public class GameScreen implements Screen {
             ));
             star.add(new SizeComponent(size));
             star.add(new StarComponent(star));
+            star.add(new CameraComponent());
 
             engine.addEntity(star);
         }
 
 
         // *** systems
-        EntitySystem renderingSystem = new RenderingSystem(batch, hudCamera);
+        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera);
         engine.addSystem(renderingSystem);
 
         EntitySystem aimingSystem = new InputHandlingSystem(hudCamera);
