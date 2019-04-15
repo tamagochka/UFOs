@@ -49,20 +49,22 @@ public class InputHandler {
 
     private static Vector3 tmp = new Vector3();
 
-    public static void unprojectToCamera(OrthographicCamera camera, Vector2 vector) {
+    public static Vector2 unprojectToCamera(OrthographicCamera camera, Vector2 vector) {
         tmp.x = vector.x;
         tmp.y = vector.y;
         tmp = camera.unproject(tmp);
         vector.x = tmp.x;
         vector.y = tmp.y;
+        return vector;
     }
 
-    public static void projectFromCamera(OrthographicCamera camera, Vector2 vector) {
+    public static Vector2 projectFromCamera(OrthographicCamera camera, Vector2 vector) {
         tmp.x = vector.x;
         tmp.y = camera.viewportHeight - vector.y;
         tmp = camera.project(tmp);
         vector.x = tmp.x;
         vector.y = tmp.y - 1;
+        return vector;
     }
 
 }

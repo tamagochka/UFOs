@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import my.tamagochka.ufos.Components.*;
 import my.tamagochka.ufos.Game;
+import my.tamagochka.ufos.Handlers.InputHandler;
 import my.tamagochka.ufos.Systems.InputHandlingSystem;
 import my.tamagochka.ufos.Systems.RenderingSystem;
 import my.tamagochka.ufos.Systems.UpdatingSystem;
@@ -86,7 +87,7 @@ public class GameScreen implements Screen {
         star.add(animationComponent);
         Vector2 size = new Vector2(star.getComponent(AnimationComponent.class).animatedSprite.getWidth(),
                 star.getComponent(AnimationComponent.class).animatedSprite.getHeight());
-        star.add(new LocationComponent(new Vector2(10, 10)));
+        star.add(new LocationComponent(new Vector2(0, 0)));
         star.add(new SizeComponent(size));
         star.add(new StarComponent(star));
         star.add(new CameraComponent());
@@ -94,6 +95,9 @@ public class GameScreen implements Screen {
 */
             /* debug code */
 
+        // ** player
+        Entity player = new Entity();
+        player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y))));
 
 
         // *** systems
@@ -124,7 +128,6 @@ public class GameScreen implements Screen {
 //        batch.begin();
 
 
-//        aim.upate();
         engine.update(delta);
 
 
