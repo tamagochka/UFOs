@@ -50,6 +50,10 @@ public class UpdatingSystem extends EntitySystem {
             if(starComponent.isBlink()) starComponent.update();
         });
 
+        // *** updating game camera position depending on player moving
+
+
+
 
 
 

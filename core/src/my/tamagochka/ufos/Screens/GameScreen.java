@@ -98,6 +98,9 @@ public class GameScreen implements Screen {
         // ** player
         Entity player = new Entity();
         player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y))));
+        player.add(new VelocityComponent(5));
+        player.add(new DirectionComponent(0));
+
 
 
         // *** systems
