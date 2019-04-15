@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -17,11 +16,12 @@ import my.tamagochka.ufos.Systems.InputHandlingSystem;
 import my.tamagochka.ufos.Systems.RenderingSystem;
 import my.tamagochka.ufos.Systems.UpdatingSystem;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 public class GameScreen implements Screen {
+
+    private static final Vector2 WORLD_SIZE = new Vector2(2880, 1620);
+    private static final int COUNT_STARS = 512;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -49,14 +49,12 @@ public class GameScreen implements Screen {
         aim.add(new HUDCameraComponent());
         engine.addEntity(aim);
 
-
         // ** stars
-        int COUNT_STARS = 128;
         int[][] rectangles = new int[COUNT_STARS][4];
         rectangles[0][0] = 0;
         rectangles[0][1] = 0;
-        rectangles[0][2] = Game.WIDTH;
-        rectangles[0][3] = Game.HEIGHT;
+        rectangles[0][2] = (int)WORLD_SIZE.x;
+        rectangles[0][3] = (int)WORLD_SIZE.y;
         rectangles = splitRectangle(rectangles, 1, true, COUNT_STARS);
 
         Entity star;
@@ -77,13 +75,29 @@ public class GameScreen implements Screen {
             star.add(new SizeComponent(size));
             star.add(new StarComponent(star));
             star.add(new CameraComponent());
-
             engine.addEntity(star);
         }
 
+            /* debug code */
+/*
+        star = new Entity();
+        AnimationComponent animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
+        animationComponent.animatedSprite.stop();
+        star.add(animationComponent);
+        Vector2 size = new Vector2(star.getComponent(AnimationComponent.class).animatedSprite.getWidth(),
+                star.getComponent(AnimationComponent.class).animatedSprite.getHeight());
+        star.add(new LocationComponent(new Vector2(10, 10)));
+        star.add(new SizeComponent(size));
+        star.add(new StarComponent(star));
+        star.add(new CameraComponent());
+        engine.addEntity(star);
+*/
+            /* debug code */
+
+
 
         // *** systems
-        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera);
+        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera, WORLD_SIZE);
         engine.addSystem(renderingSystem);
 
         EntitySystem aimingSystem = new InputHandlingSystem(hudCamera);

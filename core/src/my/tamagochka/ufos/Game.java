@@ -43,8 +43,12 @@ public class Game extends com.badlogic.gdx.Game {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
+//        camera.position.x = 0; camera.position.y = 0;
+//        camera.update();
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, WIDTH, HEIGHT);
+//        hudCamera.position.x = 0; hudCamera.position.y = 0;
+//        hudCamera.update();
         engine = new Engine();
 
 
