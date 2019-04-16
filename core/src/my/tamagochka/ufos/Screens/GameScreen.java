@@ -97,10 +97,11 @@ public class GameScreen implements Screen {
 
         // ** player
         Entity player = new Entity();
-        player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y))));
-        player.add(new VelocityComponent(5));
+        player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y - 1))));
+        player.add(new VelocityComponent(500));
         player.add(new DirectionComponent(0));
-
+        player.add(new PlayerComponent());
+        engine.addEntity(player);
 
 
         // *** systems
@@ -110,7 +111,7 @@ public class GameScreen implements Screen {
         EntitySystem aimingSystem = new InputHandlingSystem(hudCamera);
         engine.addSystem(aimingSystem);
 
-        EntitySystem updatingSystem = new UpdatingSystem(random);
+        EntitySystem updatingSystem = new UpdatingSystem(random, camera, WORLD_SIZE);
         engine.addSystem(updatingSystem);
 
 

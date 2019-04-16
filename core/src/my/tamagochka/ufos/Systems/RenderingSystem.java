@@ -12,7 +12,7 @@ public class RenderingSystem extends EntitySystem {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
-    private Vector2 wordSize;
+    private Vector2 worldSize;
 
     private ImmutableArray<Entity> hudCameraEntities;
     private ImmutableArray<Entity> cameraEntities;
@@ -21,47 +21,32 @@ public class RenderingSystem extends EntitySystem {
     private ComponentMapper<AnimationComponent> am = ComponentMapper.getFor(AnimationComponent.class);
     private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
 
-    public RenderingSystem(SpriteBatch batch, OrthographicCamera camera, OrthographicCamera hudCamera, Vector2 wordSize) {
+    public RenderingSystem(SpriteBatch batch, OrthographicCamera camera, OrthographicCamera hudCamera, Vector2 worldSize) {
         this.batch = batch;
         this.camera = camera;
         this.hudCamera = hudCamera;
-        this.wordSize = wordSize;
+        this.worldSize = worldSize;
     }
 
     @Override
     public void addedToEngine(Engine engine) {
         hudCameraEntities = engine.getEntitiesFor(Family.all(LocationComponent.class, HUDCameraComponent.class)
                 .one(TextureComponent.class, AnimationComponent.class).get());
-        cameraEntities  = engine.getEntitiesFor(Family.all(LocationComponent.class, CameraComponent.class)
+        cameraEntities = engine.getEntitiesFor(Family.all(LocationComponent.class, CameraComponent.class)
                 .one(TextureComponent.class, AnimationComponent.class).get());
     }
 
     @Override
     public void update(float deltaTime) {
 
-            /* debug code */
+        /* debug code */
+/*
         camera.translate(-2, -2);
         camera.update();
         System.out.println(camera.position);
-            /* debug code */
+*/
+        /* debug code */
 
-        // *** looping camera move
-        if(camera.position.x - camera.viewportWidth / 2 < 0) {
-            camera.position.x = camera.position.x + wordSize.x;
-            camera.update();
-        }
-        if(camera.position.y - camera.viewportHeight / 2 < 0) {
-            camera.position.y = camera.position.y + wordSize.y;
-            camera.update();
-        }
-        if(camera.position.x - camera.viewportWidth / 2 > wordSize.x) {
-            camera.position.x = camera.position.x - wordSize.x;
-            camera.update();
-        }
-        if(camera.position.y - camera.viewportHeight / 2 > wordSize.y) {
-            camera.position.y = camera.position.y - wordSize.y;
-            camera.update();
-        }
 
         // *** game entities drawing
         batch.setProjectionMatrix(camera.combined);
@@ -70,50 +55,141 @@ public class RenderingSystem extends EntitySystem {
             LocationComponent locationComponent = lm.get(entity);
             AnimationComponent animationComponent = am.get(entity);
             TextureComponent textureComponent = tm.get(entity);
-            if(textureComponent != null) {
-                batch.draw(textureComponent.texture, locationComponent.position.x, locationComponent.position.y);
-            }
-            if(animationComponent != null) {
-                animationComponent.animatedSprite.setPosition(locationComponent.position.x, locationComponent.position.y);
-                animationComponent.animatedSprite.draw(batch);
+            float camPositionX = locationComponent.position.x - camera.position.x + camera.viewportWidth / 2;
+            float camPositionY = locationComponent.position.y - camera.position.y + camera.viewportHeight / 2;
+            // draw main field
+            if((camPositionX > 0) && (camPositionX < camera.viewportWidth) && (camPositionY > 0) && (camPositionY < camera.viewportHeight)) {
+                if(textureComponent != null) {
+                    batch.draw(textureComponent.texture, locationComponent.position.x, locationComponent.position.y);
+                }
+                if(animationComponent != null) {
+                    animationComponent.animatedSprite.setPosition(locationComponent.position.x, locationComponent.position.y);
+                    animationComponent.animatedSprite.draw(batch);
+                }
             }
             // if camera on the edge of the world
-            if(camera.position.x + camera.viewportWidth / 2 > wordSize.x) {
-                if(textureComponent != null) {
-                    batch.draw(textureComponent.texture, locationComponent.position.x + wordSize.x, locationComponent.position.y);
-                }
-                if(animationComponent != null) {
-                    animationComponent.animatedSprite.setPosition(
-                            locationComponent.position.x + wordSize.x,
-                            locationComponent.position.y);
-                    animationComponent.animatedSprite.draw(batch);
-                }
-            }
-            if(camera.position.y + camera.viewportHeight > wordSize.y) {
-                if(textureComponent != null) {
-                    batch.draw(textureComponent.texture, locationComponent.position.x, locationComponent.position.y  + wordSize.y);
-                }
-                if(animationComponent != null) {
-                    animationComponent.animatedSprite.setPosition(
-                            locationComponent.position.x,
-                            locationComponent.position.y + wordSize.y);
-                    animationComponent.animatedSprite.draw(batch);
+            // draw right edge
+            if(camera.position.x + camera.viewportWidth / 2 > worldSize.x) {
+                if((camPositionX + worldSize.x > 0) && (camPositionX + worldSize.x < camera.viewportWidth) && (camPositionY > 0) && (camPositionY < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture, locationComponent.position.x + worldSize.x, locationComponent.position.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x + worldSize.x,
+                                locationComponent.position.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
                 }
             }
-            if(camera.position.x + camera.viewportWidth > wordSize.x && camera.position.y + camera.viewportHeight > wordSize.y) {
-                if(textureComponent != null) {
-                    batch.draw(textureComponent.texture, locationComponent.position.x + wordSize.x, locationComponent.position.y  + wordSize.y);
+            // draw left edge
+            if(camera.position.x - camera.viewportWidth / 2 < 0) {
+                if((camPositionX - worldSize.x > 0) && (camPositionX - worldSize.x < camera.viewportWidth) && (camPositionY > 0) && (camPositionY < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture, locationComponent.position.x - worldSize.x, locationComponent.position.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x - worldSize.x,
+                                locationComponent.position.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
                 }
-                if(animationComponent != null) {
-                    animationComponent.animatedSprite.setPosition(
-                            locationComponent.position.x + wordSize.x,
-                            locationComponent.position.y + wordSize.y);
-                    animationComponent.animatedSprite.draw(batch);
+            }
+            // draw top edge
+            if(camera.position.y + camera.viewportHeight / 2 > worldSize.y) {
+                if((camPositionX > 0) && (camPositionX < camera.viewportWidth) && (camPositionY + worldSize.y > 0) && (camPositionY + worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture, locationComponent.position.x, locationComponent.position.y + worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x,
+                                locationComponent.position.y + worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
+                }
+            }
+            // draw bottom edge
+            if(camera.position.y - camera.viewportHeight / 2 < 0) {
+                if((camPositionX > 0) && (camPositionX < camera.viewportWidth) && (camPositionY - worldSize.y > 0) && (camPositionY - worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture, locationComponent.position.x, locationComponent.position.y - worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x,
+                                locationComponent.position.y - worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
+                }
+            }
+            // draw left bottom corner
+            if((camera.position.x - camera.viewportWidth / 2 < 0) && (camera.position.y - camera.viewportHeight / 2 < 0)) {
+                if((camPositionX - worldSize.x > 0) && (camPositionX - worldSize.x < camera.viewportWidth) && (camPositionY - worldSize.y > 0) && (camPositionY - worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture,
+                                locationComponent.position.x - worldSize.x,
+                                locationComponent.position.y - worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x - worldSize.x,
+                                locationComponent.position.y - worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
+                }
+            }
+            // draw right top corner
+            if((camera.position.x + camera.viewportWidth / 2 > worldSize.x) && (camera.position.y + camera.viewportHeight / 2 > worldSize.y)) {
+                if((camPositionX + worldSize.x > 0) && (camPositionX + worldSize.x < camera.viewportWidth) && (camPositionY + worldSize.y > 0) && (camPositionY + worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture,
+                                locationComponent.position.x + worldSize.x,
+                                locationComponent.position.y + worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x + worldSize.x,
+                                locationComponent.position.y + worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
+                }
+            }
+            // draw left top corner
+            if((camera.position.x - camera.viewportWidth / 2 < 0) && (camera.position.y + camera.viewportHeight / 2 > worldSize.y)) {
+                if((camPositionX - worldSize.x > 0) && (camPositionX - worldSize.x < camera.viewportWidth) && (camPositionY + worldSize.y > 0) && (camPositionY + worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture,
+                                locationComponent.position.x - worldSize.x,
+                                locationComponent.position.y + worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x - worldSize.x,
+                                locationComponent.position.y + worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
+                }
+            }
+            // draw right bottom corner
+            if((camera.position.x + camera.viewportWidth / 2 > worldSize.x) && (camera.position.y - camera.viewportHeight / 2 < 0)) {
+                if((camPositionX + worldSize.x > 0) && (camPositionX + worldSize.x < camera.viewportWidth) && (camPositionY - worldSize.y > 0) && (camPositionY - worldSize.y < camera.viewportHeight)) {
+                    if(textureComponent != null) {
+                        batch.draw(textureComponent.texture,
+                                locationComponent.position.x + worldSize.x,
+                                locationComponent.position.y - worldSize.y);
+                    }
+                    if(animationComponent != null) {
+                        animationComponent.animatedSprite.setPosition(
+                                locationComponent.position.x + worldSize.x,
+                                locationComponent.position.y - worldSize.y);
+                        animationComponent.animatedSprite.draw(batch);
+                    }
                 }
             }
         });
         batch.end();
-
 
 
         // *** HUD entities drawing
@@ -131,7 +207,6 @@ public class RenderingSystem extends EntitySystem {
             }
         });
         batch.end();
-
 
 
     }

@@ -5,12 +5,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import my.tamagochka.ufos.Components.AimComponent;
-import my.tamagochka.ufos.Components.LocationComponent;
-import my.tamagochka.ufos.Components.SizeComponent;
+import my.tamagochka.ufos.Components.*;
 import my.tamagochka.ufos.Handlers.InputHandler;
 
 public class InputHandlingSystem extends EntitySystem {
@@ -21,8 +18,11 @@ public class InputHandlingSystem extends EntitySystem {
 
     private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
     private ComponentMapper<SizeComponent> sm = ComponentMapper.getFor(SizeComponent.class);
+    private ComponentMapper<DirectionComponent> dm = ComponentMapper.getFor(DirectionComponent.class);
     private ImmutableArray<Entity> entities;
+
     private Entity aim;
+    private Entity player;
 
     private Vector2 mousePosition;
     private Vector2 viewportCenter;
@@ -35,16 +35,17 @@ public class InputHandlingSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor(Family.all(LocationComponent.class, SizeComponent.class, AimComponent.class).get());
+        entities = engine.getEntitiesFor(Family.all(AimComponent.class).get());
         aim = entities.first(); // get aim entity
-
+        entities = engine.getEntitiesFor(Family.all(PlayerComponent.class).get());
+        player = entities.first(); // get player entity
 
 
     }
 
     @Override
     public void update(float deltaTime) {
-        // *** mouse aim handling
+        // *** calculating direction moving, aim and mouse position
         mousePosition.x = InputHandler.MOUSE_POS.x;
         mousePosition.y = InputHandler.MOUSE_POS.y;
         InputHandler.unprojectToCamera(hudCamera, mousePosition);
@@ -77,22 +78,22 @@ public class InputHandlingSystem extends EntitySystem {
         Gdx.gl.glLineWidth(1);
             /*debug code*/
 
+        // *** set player direction moving
+        DirectionComponent directionComponent = dm.get(player);
+        directionComponent.angle = alpha;
+
+        // *** aim and mouse handling
         LocationComponent locationComponent = lm.get(aim);
         SizeComponent sizeComponent = sm.get(aim);
         locationComponent.position.x = mousePosition.x - sizeComponent.size.x / 2;
         locationComponent.position.y = mousePosition.y - sizeComponent.size.y / 2;
         InputHandler.projectFromCamera(hudCamera, mousePosition);
         Gdx.input.setCursorPosition((int)mousePosition.x, (int)mousePosition.y);
-        // *** end aim handling
 
 
         // *** keyboard handling
         if(InputHandler.isPressed(InputHandler.KEY_ESC))
             Gdx.app.exit();
-
-
-
-
 
 
     }
