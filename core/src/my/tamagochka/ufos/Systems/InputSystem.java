@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import my.tamagochka.ufos.Components.*;
 import my.tamagochka.ufos.Handlers.InputHandler;
 
-public class InputHandlingSystem extends EntitySystem {
+public class InputSystem extends EntitySystem {
 
     private static final int AIM_RADIUS = 100;
 
@@ -28,7 +28,7 @@ public class InputHandlingSystem extends EntitySystem {
     private Vector2 mousePosition;
     private Vector2 viewportCenter;
 
-    public InputHandlingSystem(OrthographicCamera hudCamera) {
+    public InputSystem(OrthographicCamera hudCamera) {
         this.hudCamera = hudCamera;
         mousePosition = new Vector2();
         viewportCenter = new Vector2(hudCamera.viewportWidth / 2, hudCamera.viewportHeight / 2);

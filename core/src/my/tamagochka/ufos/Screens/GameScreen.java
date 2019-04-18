@@ -10,10 +10,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import my.tamagochka.ufos.Components.*;
 import my.tamagochka.ufos.Game;
 import my.tamagochka.ufos.Handlers.InputHandler;
-import my.tamagochka.ufos.Systems.InputHandlingSystem;
+import my.tamagochka.ufos.Systems.InputSystem;
+import my.tamagochka.ufos.Systems.PhysicsSystem;
 import my.tamagochka.ufos.Systems.RenderingSystem;
 import my.tamagochka.ufos.Systems.UpdatingSystem;
 
@@ -101,18 +103,22 @@ public class GameScreen implements Screen {
         player.add(new VelocityComponent(0, 1000));
         player.add(new DirectionComponent(0));
         player.add(new PlayerComponent());
+        player.add(new PhysicsComponent(game.getWorld(), player.getComponent(LocationComponent.class).position, BodyDef.BodyType.DynamicBody));
         engine.addEntity(player);
 
 
         // *** systems
-        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera, WORLD_SIZE);
+        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera, WORLD_SIZE, game.getWorld());
         engine.addSystem(renderingSystem);
 
-        EntitySystem aimingSystem = new InputHandlingSystem(hudCamera);
+        EntitySystem aimingSystem = new InputSystem(hudCamera);
         engine.addSystem(aimingSystem);
 
         EntitySystem updatingSystem = new UpdatingSystem(random, camera, WORLD_SIZE);
         engine.addSystem(updatingSystem);
+
+        EntitySystem physicsSystem = new PhysicsSystem(game.getWorld());
+        engine.addSystem(physicsSystem);
 
 
     }

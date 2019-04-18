@@ -5,6 +5,8 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import my.tamagochka.ufos.Components.*;
 
 public class RenderingSystem extends EntitySystem {
@@ -13,19 +15,26 @@ public class RenderingSystem extends EntitySystem {
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private Vector2 worldSize;
+    private World world;
 
     private ImmutableArray<Entity> hudCameraEntities;
     private ImmutableArray<Entity> cameraEntities;
+    private Box2DDebugRenderer b2ddr;
 
     private ComponentMapper<TextureComponent> tm = ComponentMapper.getFor(TextureComponent.class);
     private ComponentMapper<AnimationComponent> am = ComponentMapper.getFor(AnimationComponent.class);
     private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
 
-    public RenderingSystem(SpriteBatch batch, OrthographicCamera camera, OrthographicCamera hudCamera, Vector2 worldSize) {
+
+    public RenderingSystem(SpriteBatch batch, OrthographicCamera camera, OrthographicCamera hudCamera,
+                           Vector2 worldSize, World world) {
         this.batch = batch;
         this.camera = camera;
         this.hudCamera = hudCamera;
         this.worldSize = worldSize;
+        this.world = world;
+        b2ddr = new Box2DDebugRenderer();
+
     }
 
     @Override
@@ -39,14 +48,8 @@ public class RenderingSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
 
-        /* debug code */
-/*
-        camera.translate(-2, -2);
-        camera.update();
-        System.out.println(camera.position);
-*/
-        /* debug code */
-
+        // *** physics debug renderer
+        b2ddr.render(world, camera.combined);
 
         // *** game entities drawing
         batch.setProjectionMatrix(camera.combined);
