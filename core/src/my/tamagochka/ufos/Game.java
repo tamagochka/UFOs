@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import my.tamagochka.ufos.Handlers.InputHandler;
 import my.tamagochka.ufos.Handlers.InputProcessor;
 import my.tamagochka.ufos.Screens.GameScreen;
@@ -19,6 +21,7 @@ public class Game extends com.badlogic.gdx.Game {
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private Engine engine;
+    private World world;
 
     public SpriteBatch getBatch() {
         return batch;
@@ -36,24 +39,32 @@ public class Game extends com.badlogic.gdx.Game {
         return engine;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     @Override
     public void create() {
+        // *** input
         Gdx.input.setCursorCatched(true);
         Gdx.input.setInputProcessor(new InputProcessor());
+        // *** graphics
         batch = new SpriteBatch();
+        // *** camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
-//        camera.position.x = 0; camera.position.y = 0;
-//        camera.update();
+        // *** hud camera
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, WIDTH, HEIGHT);
-//        hudCamera.position.x = 0; hudCamera.position.y = 0;
-//        hudCamera.update();
+        // *** entities
         engine = new Engine();
+        // *** physics
+        world = new World(new Vector2(0, 0), true);
 
 
+
+        // *** set start screen
         setScreen(new GameScreen(this));
-
     }
 
     @Override

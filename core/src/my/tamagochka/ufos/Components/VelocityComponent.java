@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.Component;
 
 public class VelocityComponent implements Component {
 
-    public float velocity;
+    public float curVelocity;
+    public float maxVelocity;
 
-    public VelocityComponent(float velocity) {
-        this.velocity = velocity;
+    public VelocityComponent(float curVelocity, float maxVelocity) {
+        this.curVelocity = curVelocity;
+        this.maxVelocity = maxVelocity;
     }
 
 }

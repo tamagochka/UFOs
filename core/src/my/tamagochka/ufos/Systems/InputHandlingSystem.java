@@ -19,6 +19,7 @@ public class InputHandlingSystem extends EntitySystem {
     private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
     private ComponentMapper<SizeComponent> sm = ComponentMapper.getFor(SizeComponent.class);
     private ComponentMapper<DirectionComponent> dm = ComponentMapper.getFor(DirectionComponent.class);
+    private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ImmutableArray<Entity> entities;
 
     private Entity aim;
@@ -89,6 +90,26 @@ public class InputHandlingSystem extends EntitySystem {
         locationComponent.position.y = mousePosition.y - sizeComponent.size.y / 2;
         InputHandler.projectFromCamera(hudCamera, mousePosition);
         Gdx.input.setCursorPosition((int)mousePosition.x, (int)mousePosition.y);
+
+        // *** mouse input handling
+        if(InputHandler.MOUSE_RIGHT) { // acceleration
+            VelocityComponent velocityComponent = vm.get(player);
+            if(velocityComponent.curVelocity < velocityComponent.maxVelocity) {
+                velocityComponent.curVelocity++;
+                System.out.println(velocityComponent.curVelocity);
+            }
+        } else {
+            VelocityComponent velocityComponent = vm.get(player);
+            if(velocityComponent.curVelocity > 0) {
+                velocityComponent.curVelocity--;
+                System.out.println(velocityComponent.curVelocity);
+            }
+        }
+
+        if(InputHandler.MOUSE_LEFT) { // shooting
+
+        }
+
 
 
         // *** keyboard handling

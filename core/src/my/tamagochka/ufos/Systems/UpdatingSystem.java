@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import my.tamagochka.ufos.Components.*;
 
 import java.util.Random;
@@ -69,29 +68,23 @@ public class UpdatingSystem extends EntitySystem {
         DirectionComponent directionComponent = dm.get(player);
         LocationComponent locationComponent = lm.get(player);
 
-        float dx = velocityComponent.velocity * deltaTime * (float)Math.cos(directionComponent.angle);
-        float dy = velocityComponent.velocity * deltaTime * (float)Math.sin(directionComponent.angle);
+        float dx = velocityComponent.curVelocity * deltaTime * (float)Math.cos(directionComponent.angle);
+        float dy = velocityComponent.curVelocity * deltaTime * (float)Math.sin(directionComponent.angle);
         locationComponent.position.x += dx;
         locationComponent.position.y += dy;
 
 
         // *** looping player move
-/*
-        if(locationComponent.position.x  - camera.viewportWidth / 2 < 0) locationComponent.position.x += worldSize.x;
-        if(locationComponent.position.y  - camera.viewportWidth / 2 < 0) locationComponent.position.y += worldSize.y;
-        if(locationComponent.position.x  - camera.viewportWidth / 2 > worldSize.x) locationComponent.position.x -= worldSize.x;
-        if(locationComponent.position.y  - camera.viewportWidth / 2 > worldSize.y) locationComponent.position.y -= worldSize.y;
-*/
         if(locationComponent.position.x < 0) locationComponent.position.x += worldSize.x;
         if(locationComponent.position.y < 0) locationComponent.position.y += worldSize.y;
         if(locationComponent.position.x > worldSize.x) locationComponent.position.x -= worldSize.x;
         if(locationComponent.position.y > worldSize.y) locationComponent.position.y -= worldSize.y;
 
 
+        // *** camera follow for player
         camera.position.x = locationComponent.position.x;
         camera.position.y = locationComponent.position.y;
 
-        System.out.println(locationComponent.position);
 
 
 
