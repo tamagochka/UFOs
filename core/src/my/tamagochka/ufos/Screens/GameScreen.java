@@ -100,7 +100,7 @@ public class GameScreen implements Screen {
         // ** player
         Entity player = new Entity();
         player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y - 1))));
-        player.add(new VelocityComponent(0, 1000));
+        player.add(new VelocityComponent(0, 100, 1));
         player.add(new DirectionComponent(0));
         player.add(new PlayerComponent());
         player.add(new PhysicsComponent(game.getWorld(), player.getComponent(LocationComponent.class).position, BodyDef.BodyType.DynamicBody));

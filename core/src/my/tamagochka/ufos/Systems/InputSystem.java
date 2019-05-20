@@ -92,18 +92,11 @@ public class InputSystem extends EntitySystem {
         Gdx.input.setCursorPosition((int)mousePosition.x, (int)mousePosition.y);
 
         // *** mouse input handling
+        VelocityComponent velocityComponent = vm.get(player);
         if(InputHandler.MOUSE_RIGHT) { // acceleration
-            VelocityComponent velocityComponent = vm.get(player);
-            if(velocityComponent.curVelocity < velocityComponent.maxVelocity) {
-                velocityComponent.curVelocity++;
-                System.out.println(velocityComponent.curVelocity);
-            }
+            velocityComponent.increaseVelocity();
         } else {
-            VelocityComponent velocityComponent = vm.get(player);
-            if(velocityComponent.curVelocity > 0) {
-                velocityComponent.curVelocity--;
-                System.out.println(velocityComponent.curVelocity);
-            }
+            velocityComponent.decreaseVelocity();
         }
 
         if(InputHandler.MOUSE_LEFT) { // shooting
@@ -113,8 +106,9 @@ public class InputSystem extends EntitySystem {
 
 
         // *** keyboard handling
-        if(InputHandler.isPressed(InputHandler.KEY_ESC))
+        if(InputHandler.isPressed(InputHandler.KEY_ESC)) {
             Gdx.app.exit();
+        }
 
 
     }

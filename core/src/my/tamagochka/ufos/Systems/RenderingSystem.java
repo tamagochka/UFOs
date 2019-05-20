@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import my.tamagochka.ufos.Components.*;
+import my.tamagochka.ufos.Game;
 
 public class RenderingSystem extends EntitySystem {
 
@@ -19,7 +20,11 @@ public class RenderingSystem extends EntitySystem {
 
     private ImmutableArray<Entity> hudCameraEntities;
     private ImmutableArray<Entity> cameraEntities;
+
+    /*debug code*/
     private Box2DDebugRenderer b2ddr;
+    private OrthographicCamera b2ddrCamera;
+    /*debug code*/
 
     private ComponentMapper<TextureComponent> tm = ComponentMapper.getFor(TextureComponent.class);
     private ComponentMapper<AnimationComponent> am = ComponentMapper.getFor(AnimationComponent.class);
@@ -33,7 +38,12 @@ public class RenderingSystem extends EntitySystem {
         this.hudCamera = hudCamera;
         this.worldSize = worldSize;
         this.world = world;
+
+        /*debug code*/
         b2ddr = new Box2DDebugRenderer();
+        b2ddrCamera = new OrthographicCamera();
+        b2ddrCamera.setToOrtho(false, Game.WIDTH / PhysicsComponent.PPM, Game.HEIGHT / PhysicsComponent.PPM);
+        /*debug code*/
 
     }
 
@@ -45,11 +55,14 @@ public class RenderingSystem extends EntitySystem {
                 .one(TextureComponent.class, AnimationComponent.class).get());
     }
 
+
+
     @Override
     public void update(float deltaTime) {
 
-        // *** physics debug renderer
-        b2ddr.render(world, camera.combined);
+        /*debug code*/ // *** physics debug renderer
+        b2ddr.render(world, b2ddrCamera.combined);
+        /*debug code*/
 
         // *** game entities drawing
         batch.setProjectionMatrix(camera.combined);

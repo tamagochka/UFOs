@@ -17,6 +17,7 @@ public class UpdatingSystem extends EntitySystem {
     private ComponentMapper<DirectionComponent> dm = ComponentMapper.getFor(DirectionComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
+    private ComponentMapper<PhysicsComponent> pm = ComponentMapper.getFor(PhysicsComponent.class);
 
     private ImmutableArray<Entity> stars;
     private Entity player;
@@ -44,7 +45,6 @@ public class UpdatingSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
 
-
         // *** stars blinking
         buffer += deltaTime;
         if(buffer > 1) {
@@ -64,32 +64,30 @@ public class UpdatingSystem extends EntitySystem {
         });
 
         // *** updating game camera position depending on player moving
-        VelocityComponent velocityComponent = vm.get(player);
-        DirectionComponent directionComponent = dm.get(player);
         LocationComponent locationComponent = lm.get(player);
+        PhysicsComponent physicsComponent = pm.get(player);
 
-        float dx = velocityComponent.curVelocity * deltaTime * (float)Math.cos(directionComponent.angle);
-        float dy = velocityComponent.curVelocity * deltaTime * (float)Math.sin(directionComponent.angle);
-        locationComponent.position.x += dx;
-        locationComponent.position.y += dy;
+        // ** looping player move
+        if(locationComponent.position.x < 0) {
+            locationComponent.position.x += worldSize.x;
+            physicsComponent.setPosition(locationComponent.position);
+        }
+        if(locationComponent.position.y < 0) {
+            locationComponent.position.y += worldSize.y;
+            physicsComponent.setPosition(locationComponent.position);
+        }
+        if(locationComponent.position.x > worldSize.x) {
+            locationComponent.position.x -= worldSize.x;
+            physicsComponent.setPosition(locationComponent.position);
+        }
+        if(locationComponent.position.y > worldSize.y) {
+            locationComponent.position.y -= worldSize.y;
+            physicsComponent.setPosition(locationComponent.position);
+        }
 
-
-        // *** looping player move
-        if(locationComponent.position.x < 0) locationComponent.position.x += worldSize.x;
-        if(locationComponent.position.y < 0) locationComponent.position.y += worldSize.y;
-        if(locationComponent.position.x > worldSize.x) locationComponent.position.x -= worldSize.x;
-        if(locationComponent.position.y > worldSize.y) locationComponent.position.y -= worldSize.y;
-
-
-        // *** camera follow for player
+        // ** camera follow for player
         camera.position.x = locationComponent.position.x;
         camera.position.y = locationComponent.position.y;
-
-
-
-
-
-
         camera.update();
 
 
