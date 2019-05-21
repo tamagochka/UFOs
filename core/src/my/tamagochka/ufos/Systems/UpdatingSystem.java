@@ -5,13 +5,11 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import my.tamagochka.ufos.Components.*;
+import my.tamagochka.ufos.Game;
 
 import java.util.Random;
 
 public class UpdatingSystem extends EntitySystem {
-
-    private static final int CHANCE_TO_BLINK_STAR = 5;
-    private static final int MAX_FREQUENCY_BLINKING = 3;
 
     private ComponentMapper<StarComponent> sm = ComponentMapper.getFor(StarComponent.class);
     private ComponentMapper<DirectionComponent> dm = ComponentMapper.getFor(DirectionComponent.class);
@@ -24,11 +22,13 @@ public class UpdatingSystem extends EntitySystem {
 
     private Random random;
     private OrthographicCamera camera;
+    private OrthographicCamera b2ddrCamera;
     private Vector2 worldSize;
 
-    public UpdatingSystem(Random random, OrthographicCamera camera, Vector2 worldSie) {
+    public UpdatingSystem(Random random, OrthographicCamera camera, OrthographicCamera b2ddrCamera, Vector2 worldSie) {
         this.random = random;
         this.camera = camera;
+        this.b2ddrCamera = b2ddrCamera;
         this.worldSize = worldSie;
     }
 
@@ -51,8 +51,8 @@ public class UpdatingSystem extends EntitySystem {
             buffer = 0;
             counter = 0;
         }
-        if(counter < MAX_FREQUENCY_BLINKING) {
-            if(random.nextInt(100) < CHANCE_TO_BLINK_STAR) {
+        if(counter < Game.MAX_FREQUENCY_BLINKING) {
+            if(random.nextInt(100) < Game.CHANCE_TO_BLINK_STAR) {
                 counter++;
                 StarComponent starComponent = sm.get(stars.random());
                 starComponent.blink();
@@ -89,6 +89,13 @@ public class UpdatingSystem extends EntitySystem {
         camera.position.x = locationComponent.position.x;
         camera.position.y = locationComponent.position.y;
         camera.update();
+
+        // ** camera for physics renderer follow for player
+        if(Game.DEBUG_MODE) {
+            b2ddrCamera.position.x = camera.position.x / Game.PPM;
+            b2ddrCamera.position.y = camera.position.y / Game.PPM;
+            b2ddrCamera.update();
+        }
 
 
 

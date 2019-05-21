@@ -23,21 +23,20 @@ import java.util.Random;
 
 public class GameScreen implements Screen {
 
-    private static final Vector2 WORLD_SIZE = new Vector2(2880, 1620);
-    private static final int COUNT_STARS = 512;
-
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    private OrthographicCamera b2ddrCamera;
     private Engine engine;
     private Random random = new Random();
     private TextureAtlas atlas;
 
-    public GameScreen(Game game) {
 
+    public GameScreen(Game game) {
         batch = game.getBatch();
         camera = game.getCamera();
         hudCamera = game.getHudCamera();
+        b2ddrCamera = game.getB2ddrCamera();
         engine = game.getEngine();
 
         atlas = new TextureAtlas("star0.atlas");
@@ -53,15 +52,15 @@ public class GameScreen implements Screen {
         engine.addEntity(aim);
 
         // ** stars
-        int[][] rectangles = new int[COUNT_STARS][4];
+        int[][] rectangles = new int[Game.COUNT_STARS][4];
         rectangles[0][0] = 0;
         rectangles[0][1] = 0;
-        rectangles[0][2] = (int)WORLD_SIZE.x;
-        rectangles[0][3] = (int)WORLD_SIZE.y;
-        rectangles = splitRectangle(rectangles, 1, true, COUNT_STARS);
+        rectangles[0][2] = (int)Game.WORLD_SIZE.x;
+        rectangles[0][3] = (int)Game.WORLD_SIZE.y;
+        rectangles = splitRectangle(rectangles, 1, true, Game.COUNT_STARS);
 
         Entity star;
-        for(int i = 0; i < COUNT_STARS; i++) {
+        for(int i = 0; i < Game.COUNT_STARS; i++) {
             star = new Entity();
             // TODO add more types of stars
             AnimationComponent animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
@@ -108,14 +107,14 @@ public class GameScreen implements Screen {
 
 
         // *** systems
-        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera, WORLD_SIZE, game.getWorld());
+        EntitySystem updatingSystem = new UpdatingSystem(random, camera, b2ddrCamera, Game.WORLD_SIZE);
+        engine.addSystem(updatingSystem);
+
+        EntitySystem renderingSystem = new RenderingSystem(batch, camera, hudCamera, b2ddrCamera, Game.WORLD_SIZE, game.getWorld());
         engine.addSystem(renderingSystem);
 
         EntitySystem aimingSystem = new InputSystem(hudCamera);
         engine.addSystem(aimingSystem);
-
-        EntitySystem updatingSystem = new UpdatingSystem(random, camera, WORLD_SIZE);
-        engine.addSystem(updatingSystem);
 
         EntitySystem physicsSystem = new PhysicsSystem(game.getWorld());
         engine.addSystem(physicsSystem);

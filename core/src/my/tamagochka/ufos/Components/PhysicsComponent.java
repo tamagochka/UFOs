@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-public class PhysicsComponent implements Component {
+import static my.tamagochka.ufos.Game.PPM;
 
-    public static final float PPM = 100f; // pixels per meter scale
+public class PhysicsComponent implements Component {
 
     private Body body;
 
@@ -39,8 +39,6 @@ public class PhysicsComponent implements Component {
         positionCalculator.set(body.getPosition());
         positionCalculator.x *= PPM;
         positionCalculator.y *= PPM;
-
-        System.out.println(body.getLinearVelocity());
         return positionCalculator;
     }
 

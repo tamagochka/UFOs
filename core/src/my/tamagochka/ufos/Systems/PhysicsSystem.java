@@ -7,6 +7,7 @@ import my.tamagochka.ufos.Components.DirectionComponent;
 import my.tamagochka.ufos.Components.LocationComponent;
 import my.tamagochka.ufos.Components.PhysicsComponent;
 import my.tamagochka.ufos.Components.VelocityComponent;
+import my.tamagochka.ufos.Game;
 
 public class PhysicsSystem extends EntitySystem {
 
@@ -40,7 +41,7 @@ public class PhysicsSystem extends EntitySystem {
             physicsComponent.applyForce(dx, dy);
             locationComponent.position.set(physicsComponent.getPosition());
         });
-        world.step(deltaTime, 10, 10);
+        world.step(deltaTime, Game.VELOCITY_ITERATIONS, Game.POSITION_ITERATIONS);
     }
 
 }

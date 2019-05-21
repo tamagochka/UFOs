@@ -15,16 +15,14 @@ public class RenderingSystem extends EntitySystem {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    private OrthographicCamera b2ddrCamera;
     private Vector2 worldSize;
     private World world;
 
     private ImmutableArray<Entity> hudCameraEntities;
     private ImmutableArray<Entity> cameraEntities;
 
-    /*debug code*/
-    private Box2DDebugRenderer b2ddr;
-    private OrthographicCamera b2ddrCamera;
-    /*debug code*/
+    private Box2DDebugRenderer b2ddr; // debug renderer for physics models
 
     private ComponentMapper<TextureComponent> tm = ComponentMapper.getFor(TextureComponent.class);
     private ComponentMapper<AnimationComponent> am = ComponentMapper.getFor(AnimationComponent.class);
@@ -32,18 +30,15 @@ public class RenderingSystem extends EntitySystem {
 
 
     public RenderingSystem(SpriteBatch batch, OrthographicCamera camera, OrthographicCamera hudCamera,
-                           Vector2 worldSize, World world) {
+                           OrthographicCamera b2ddrCamera, Vector2 worldSize, World world) {
         this.batch = batch;
         this.camera = camera;
         this.hudCamera = hudCamera;
         this.worldSize = worldSize;
         this.world = world;
-
-        /*debug code*/
-        b2ddr = new Box2DDebugRenderer();
-        b2ddrCamera = new OrthographicCamera();
-        b2ddrCamera.setToOrtho(false, Game.WIDTH / PhysicsComponent.PPM, Game.HEIGHT / PhysicsComponent.PPM);
-        /*debug code*/
+        this.b2ddrCamera = b2ddrCamera;
+        if(Game.DEBUG_MODE) // debug renderer for physics models
+            b2ddr = new Box2DDebugRenderer();
 
     }
 
@@ -56,13 +51,12 @@ public class RenderingSystem extends EntitySystem {
     }
 
 
-
     @Override
     public void update(float deltaTime) {
 
-        /*debug code*/ // *** physics debug renderer
-        b2ddr.render(world, b2ddrCamera.combined);
-        /*debug code*/
+        // *** physics debug renderer
+        if(Game.DEBUG_MODE)
+            b2ddr.render(world, b2ddrCamera.combined);
 
         // *** game entities drawing
         batch.setProjectionMatrix(camera.combined);
