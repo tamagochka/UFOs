@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +26,7 @@ public class GameScreen implements Screen {
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
-    private OrthographicCamera hudCamera;
+    private OrthographicCamera hudCamera; // TODO remove this object if not using
     private OrthographicCamera b2ddrCamera;
     private Engine engine;
     private Random random = new Random();
@@ -39,16 +40,26 @@ public class GameScreen implements Screen {
         b2ddrCamera = game.getB2ddrCamera();
         engine = game.getEngine();
 
-        atlas = new TextureAtlas("star0.atlas");
+        atlas = new TextureAtlas("atlas.atlas");
 
         // *** entities
+        AnimationComponent animationComponent = null;
+
         // ** aim
         Entity aim = new Entity();
-        aim.add(new TextureComponent("aim.png"));
-        aim.add(new LocationComponent(new Vector2(hudCamera.viewportWidth / 2, hudCamera.viewportHeight / 2)));
-        aim.add(new SizeComponent(aim.getComponent(TextureComponent.class).getSize()));
+        animationComponent = new AnimationComponent(atlas, "aim", 0.1f);
+        animationComponent.animatedSprite.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+        aim.add(animationComponent);
+        aim.add(
+                new PhysicsComponent(
+                        game.getWorld(),
+                        new Vector2(hudCamera.viewportWidth / 2, hudCamera.viewportHeight / 2),
+                        BodyDef.BodyType.KinematicBody, false
+                )
+        );
         aim.add(new AimComponent());
-        aim.add(new HUDCameraComponent());
+//        aim.add(new HUDCameraComponent());
+        aim.add(new CameraComponent());
         engine.addEntity(aim);
 
         // ** stars
@@ -63,24 +74,25 @@ public class GameScreen implements Screen {
         for(int i = 0; i < Game.COUNT_STARS; i++) {
             star = new Entity();
             // TODO add more types of stars
-            AnimationComponent animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
+            animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
             animationComponent.animatedSprite.stop();
             star.add(animationComponent);
             Vector2 size = new Vector2(star.getComponent(AnimationComponent.class).animatedSprite.getWidth(),
                     star.getComponent(AnimationComponent.class).animatedSprite.getHeight());
-            star.add(new LocationComponent(
-                    new Vector2(
-                            random.nextInt(rectangles[i][2] - (int)size.x) + rectangles[i][0],
-                            random.nextInt(rectangles[i][3] - (int)size.y) + rectangles[i][1]
+            star.add(
+                    new PhysicsComponent(
+                            game.getWorld(),
+                            new Vector2(random.nextInt(rectangles[i][2] - (int)size.x) + rectangles[i][0],
+                                    random.nextInt(rectangles[i][3] - (int)size.y) + rectangles[i][1]),
+                            BodyDef.BodyType.StaticBody, false
                     )
-            ));
-            star.add(new SizeComponent(size));
+            );
             star.add(new StarComponent(star));
             star.add(new CameraComponent());
             engine.addEntity(star);
         }
 
-            /* debug code */
+        /* debug code */
 /*
         star = new Entity();
         AnimationComponent animationComponent = new AnimationComponent(atlas, "star0", 0.1f);
@@ -94,15 +106,26 @@ public class GameScreen implements Screen {
         star.add(new CameraComponent());
         engine.addEntity(star);
 */
-            /* debug code */
+        /* debug code */
 
         // ** player
         Entity player = new Entity();
-        player.add(new LocationComponent(InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y - 1))));
+        animationComponent = new AnimationComponent(atlas, "ufo_gray", 0.1f);
+        animationComponent.animatedSprite.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+        player.add(animationComponent);
         player.add(new VelocityComponent(0, 100, 1));
         player.add(new DirectionComponent(0));
         player.add(new PlayerComponent());
-        player.add(new PhysicsComponent(game.getWorld(), player.getComponent(LocationComponent.class).position, BodyDef.BodyType.DynamicBody));
+        player.add(
+                new PhysicsComponent(
+                        game.getWorld(),
+                        InputHandler.projectFromCamera(camera, new Vector2(camera.position.x, camera.position.y - 1)),
+                        BodyDef.BodyType.DynamicBody, true
+                )
+        );
+        player.add(new CameraComponent());
+
+
         engine.addEntity(player);
 
 

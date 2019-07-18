@@ -4,7 +4,9 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import my.tamagochka.ufos.Components.*;
+import my.tamagochka.ufos.Components.PhysicsComponent;
+import my.tamagochka.ufos.Components.PlayerComponent;
+import my.tamagochka.ufos.Components.StarComponent;
 import my.tamagochka.ufos.Game;
 
 import java.util.Random;
@@ -12,9 +14,6 @@ import java.util.Random;
 public class UpdatingSystem extends EntitySystem {
 
     private ComponentMapper<StarComponent> sm = ComponentMapper.getFor(StarComponent.class);
-    private ComponentMapper<DirectionComponent> dm = ComponentMapper.getFor(DirectionComponent.class);
-    private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
-    private ComponentMapper<LocationComponent> lm = ComponentMapper.getFor(LocationComponent.class);
     private ComponentMapper<PhysicsComponent> pm = ComponentMapper.getFor(PhysicsComponent.class);
 
     private ImmutableArray<Entity> stars;
@@ -37,7 +36,6 @@ public class UpdatingSystem extends EntitySystem {
         stars = engine.getEntitiesFor(Family.all(StarComponent.class).get());
         player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).first();
     }
-
 
     private float buffer = 0;
     private float counter = 0;
@@ -64,30 +62,34 @@ public class UpdatingSystem extends EntitySystem {
         });
 
         // *** updating game camera position depending on player moving
-        LocationComponent locationComponent = lm.get(player);
         PhysicsComponent physicsComponent = pm.get(player);
 
         // ** looping player move
-        if(locationComponent.position.x < 0) {
-            locationComponent.position.x += worldSize.x;
-            physicsComponent.setPosition(locationComponent.position);
+        float tmpX = 0;
+        tmpX = physicsComponent.getPositionX();
+        if(tmpX < 0) {
+            tmpX += worldSize.x;
+            physicsComponent.setPositionX(tmpX);
         }
-        if(locationComponent.position.y < 0) {
-            locationComponent.position.y += worldSize.y;
-            physicsComponent.setPosition(locationComponent.position);
+        if(tmpX > worldSize.x) {
+            tmpX -= worldSize.x;
+            physicsComponent.setPositionX(tmpX);
         }
-        if(locationComponent.position.x > worldSize.x) {
-            locationComponent.position.x -= worldSize.x;
-            physicsComponent.setPosition(locationComponent.position);
+
+        float tmpY = 0;
+        tmpY = physicsComponent.getPositionY();
+        if(tmpY < 0) {
+            tmpY += worldSize.y;
+            physicsComponent.setPositionY(tmpY);
         }
-        if(locationComponent.position.y > worldSize.y) {
-            locationComponent.position.y -= worldSize.y;
-            physicsComponent.setPosition(locationComponent.position);
+        if(tmpY > worldSize.y) {
+            tmpY -= worldSize.y;
+            physicsComponent.setPositionY(tmpY);
         }
 
         // ** camera follow for player
-        camera.position.x = locationComponent.position.x;
-        camera.position.y = locationComponent.position.y;
+        camera.position.x = tmpX;
+        camera.position.y = tmpY;
         camera.update();
 
         // ** camera for physics renderer follow for player
@@ -96,9 +98,6 @@ public class UpdatingSystem extends EntitySystem {
             b2ddrCamera.position.y = camera.position.y / Game.PPM;
             b2ddrCamera.update();
         }
-
-
-
 
 
     }

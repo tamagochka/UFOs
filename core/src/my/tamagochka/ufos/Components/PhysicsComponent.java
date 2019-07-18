@@ -10,19 +10,22 @@ public class PhysicsComponent implements Component {
 
     private Body body;
 
-    public PhysicsComponent(World world, Vector2 position, BodyDef.BodyType bodyType) {
+    public PhysicsComponent(World world, Vector2 position, BodyDef.BodyType bodyType, boolean active) {
 
         BodyDef bdef = new BodyDef();
         bdef.position.set(position.x / PPM, position.y / PPM);
         bdef.type = bodyType;
+
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(10 / PPM, 10 / PPM);
+        shape.setAsBox(30 / PPM, 15 / PPM);
 
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
 
         body = world.createBody(bdef);
         body.createFixture(fdef);
+
+        body.setActive(active);
 
         body.setLinearDamping(1.0f);
         MassData massData = body.getMassData();
@@ -32,21 +35,20 @@ public class PhysicsComponent implements Component {
 
     }
 
-    // variable for scaling from physics world to graphics and back
-    private Vector2 positionCalculator = new Vector2();
-
-    public Vector2 getPosition() {
-        positionCalculator.set(body.getPosition());
-        positionCalculator.x *= PPM;
-        positionCalculator.y *= PPM;
-        return positionCalculator;
+    public float getPositionX() {
+        return body.getPosition().x * PPM;
     }
 
-    public void setPosition(Vector2 position) {
-        positionCalculator.set(position);
-        positionCalculator.x /= PPM;
-        positionCalculator.y /= PPM;
-        body.setTransform(positionCalculator, body.getAngle());
+    public float getPositionY() {
+        return body.getPosition().y * PPM;
+    }
+
+    public void setPositionX(float x) {
+        body.setTransform(x / PPM, body.getPosition().y, body.getAngle());
+    }
+
+    public void setPositionY(float y) {
+        body.setTransform(body.getPosition().x, y / PPM, body.getAngle());
     }
 
     public void applyForce(float dx, float dy) {
