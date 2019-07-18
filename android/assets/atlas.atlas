@@ -1,0 +1,251 @@
+
+atlas.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+aim
+  rotate: false
+  xy: 978, 475
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 0
+star0
+  rotate: false
+  xy: 2, 2
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: 0
+star0
+  rotate: false
+  xy: 734, 124
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: 1
+star0
+  rotate: false
+  xy: 856, 246
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: 2
+star0
+  rotate: false
+  xy: 978, 458
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: 3
+star0
+  rotate: false
+  xy: 19, 2
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: 4
+ufo_gray
+  rotate: false
+  xy: 2, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 0
+ufo_gray
+  rotate: false
+  xy: 2, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+ufo_gray
+  rotate: false
+  xy: 124, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+ufo_gray
+  rotate: false
+  xy: 2, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+ufo_gray
+  rotate: false
+  xy: 124, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+ufo_gray
+  rotate: false
+  xy: 246, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 5
+ufo_gray
+  rotate: false
+  xy: 2, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 6
+ufo_gray
+  rotate: false
+  xy: 124, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 7
+ufo_gray
+  rotate: false
+  xy: 246, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 8
+ufo_gray
+  rotate: false
+  xy: 368, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 9
+ufo_gray
+  rotate: false
+  xy: 124, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 10
+ufo_gray
+  rotate: false
+  xy: 246, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 11
+ufo_gray
+  rotate: false
+  xy: 368, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 12
+ufo_gray
+  rotate: false
+  xy: 490, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 13
+ufo_gray
+  rotate: false
+  xy: 246, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 14
+ufo_gray
+  rotate: false
+  xy: 368, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 15
+ufo_gray
+  rotate: false
+  xy: 490, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 16
+ufo_gray
+  rotate: false
+  xy: 612, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 17
+ufo_gray
+  rotate: false
+  xy: 368, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 18
+ufo_gray
+  rotate: false
+  xy: 490, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 19
+ufo_gray
+  rotate: false
+  xy: 612, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 20
+ufo_gray
+  rotate: false
+  xy: 734, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 21
+ufo_gray
+  rotate: false
+  xy: 490, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 22
+ufo_gray
+  rotate: false
+  xy: 612, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 23
+ufo_gray
+  rotate: false
+  xy: 734, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 24
+ufo_gray
+  rotate: false
+  xy: 856, 385
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 25
+ufo_gray
+  rotate: false
+  xy: 612, 19
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 26
+ufo_gray
+  rotate: false
+  xy: 734, 141
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 27
+ufo_gray
+  rotate: false
+  xy: 856, 263
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 28
